@@ -37,9 +37,11 @@ class Trtl
     @canvas
   end
 
-  def title(title)
-    RenderingRoot.new(title: title, is_test: @is_test)
-  end
+  # TODO:  Assertain if below function is dead code or has a purpose.
+  # hmmm... dead code?  Oh.. possibly a way to reset the canvas?... idk...
+  #def title(title)
+  #  RenderingRoot.new(title: title, is_test: @is_test)
+  #end
 
   def pen_up
     @drawing = false
@@ -74,7 +76,7 @@ class Trtl
   end
 
   def move(new_x, new_y)
-    RenderingcLine.new(canvas, @x, @y, new_x, new_y, :width => @width, :fill => @color, is_test: @is_test) if @drawing
+    RenderingcLine.new(canvas, @x, @y, new_x, new_y, width: @width, fill: @color, is_test: @is_test) if @drawing
     @x, @y = new_x, new_y
     draw
   end
@@ -91,7 +93,7 @@ class Trtl
 
   def dot(size = nil)
     size ||= [@width + 4, @width * 2].max
-    TkcOval.new(canvas, @x - size / 2, @y - size / 2, @x + size / 2, @y + size / 2, :fill => @color, :outline => @color)
+    TkcOval.new(canvas, @x - size / 2, @y - size / 2, @x + size / 2, @y + size / 2, fill: @color, outline: @color)
   end
 
   # TODO / TOFIX: This is horribly wrong with the fewer steps due to circumference varying ;-)
@@ -159,7 +161,7 @@ class Trtl
 
   def draw
     canvas.delete(@turtle_line) if @turtle_line
-    @turtle_line = RenderingcLine.new(canvas, @x, @y, @x + dx * 5 , @y + dy * 5, :arrow => 'last', :width => 10, :fill => @color, is_test: @is_test)
+    @turtle_line = RenderingcLine.new(canvas, @x, @y, @x + dx * 5 , @y + dy * 5, arrow: 'last', width: 10, fill: @color, is_test: @is_test)
     # Can probably just use ensure_drawn actually..
     # TkTimer.new(60, 1) { Tk.update }.start.wait if @interactive
     true
@@ -171,7 +173,7 @@ module InteractiveTurtle
 
   Trtl.instance_methods(false).each do |meth|
     define_method meth do |*args, &p|
-      (@turtle ||= ::Trtl.new(:interactive => true)).send(meth, *args, &p)
+      (@turtle ||= ::Trtl.new(interactive: true)).send(meth, *args, &p)
     end
   end
 end
