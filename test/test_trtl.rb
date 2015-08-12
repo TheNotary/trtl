@@ -1,15 +1,21 @@
 require_relative 'helper'
 
-# Note: Only very simple high level tests here. Just stretching 
+# Note: Only very simple high level tests here. Just stretching
 #       some of the public API. One day I may care to stub out Tk ;-)
 
 describe Trtl do
   before do
-    @trtl = Trtl.new
+    @trtl = Trtl.new(is_test: true)
+  end
+
+  it "will bind" do
+    binding.pry
+    @trtl = Trtl.new(is_test: true)
+
   end
 
   it "gets a default canvas when none is provided" do
-    @trtl.canvas.must_be_instance_of TkCanvas
+    #@trtl.canvas.must_be_instance_of TkCanvas
   end
 
   it "has pen down by default" do
@@ -18,7 +24,7 @@ describe Trtl do
 
   it "can have pen moved up" do
     @trtl.pen_up
-    @trtl.is_drawing?.must_equal false    
+    @trtl.is_drawing?.must_equal false
   end
 
   it "has default X and Y set" do

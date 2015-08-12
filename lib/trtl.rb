@@ -1,4 +1,5 @@
-require 'tk'
+#require 'tk'
+require 'trtl/canvas'
 
 class Trtl
   VERSION = "0.0.1"
@@ -14,33 +15,36 @@ class Trtl
   attr_writer :color, :width
   attr_reader :canvas
 
+  include Canvas
+
   def initialize(options = {})
+    @is_test = options[:is_test]
     @color = options[:color] || COLORS.sample
     @interactive = options[:interactive]
-    @canvas = options[:canvas] || self.class.canvas
+    @canvas = options[:canvas] || self.class.canvas(@is_test)
     @width = options[:width] || 1
     @drawing = true
     home
     draw
   end
 
-  def self.canvas
+  def self.canvas(is_test = nil)
     return @canvas if @canvas
 
-    root = TkRoot.new(:title => 'trtl', :minsize => [CANVAS_WIDTH, CANVAS_HEIGHT])
-    @canvas = TkCanvas.new(root, :bg => 'black', :highlightthickness => 0, :width => CANVAS_WIDTH, :height => CANVAS_HEIGHT)
-    @canvas.pack(:fill => 'both', :expand => 1)
+    root = RenderingRoot.new(title: 'trtl', minsize: [CANVAS_WIDTH, CANVAS_HEIGHT], is_test: is_test)
+    @canvas = RenderingCanvas.new(root, bg: 'black', highlightthickness: 0, width: CANVAS_WIDTH, height: CANVAS_HEIGHT, is_test: is_test)
+    @canvas.pack(fill: 'both', expand: 1)
     @canvas
   end
-  
+
   def title(title)
-    TkRoot.new(:title => title)
+    RenderingRoot.new(title: title, is_test: @is_test)
   end
 
   def pen_up
     @drawing = false
   end
-  
+
   def pen_down
     @drawing = true
   end
@@ -56,7 +60,7 @@ class Trtl
   def width(width)
     @width = width
   end
-  
+
   def forward(amount = 20)
     new_x = (@x + dx * amount)
     new_y = (@y + dy * amount)
@@ -68,18 +72,18 @@ class Trtl
     new_y = (@y - dy * amount)
     move(new_x, new_y)
   end
-  
+
   def move(new_x, new_y)
-    TkcLine.new(canvas, @x, @y, new_x, new_y, :width => @width, :fill => @color) if @drawing
+    RenderingcLine.new(canvas, @x, @y, new_x, new_y, :width => @width, :fill => @color, is_test: @is_test) if @drawing
     @x, @y = new_x, new_y
     draw
   end
-  
+
   def right(offset)
     @heading = (@heading + offset) % 360
     draw
   end
-  
+
   def left(offset)
     @heading = (@heading - offset) % 360
     draw
@@ -148,16 +152,16 @@ class Trtl
   def dx
     Math.cos(@heading * DEG)
   end
-  
+
   def dy
     Math.sin(@heading * DEG)
   end
 
   def draw
     canvas.delete(@turtle_line) if @turtle_line
-    @turtle_line = TkcLine.new(canvas, @x, @y, @x + dx * 5 , @y + dy * 5, :arrow => 'last', :width => 10, :fill => @color)
+    @turtle_line = RenderingcLine.new(canvas, @x, @y, @x + dx * 5 , @y + dy * 5, :arrow => 'last', :width => 10, :fill => @color, is_test: @is_test)
     # Can probably just use ensure_drawn actually..
-    TkTimer.new(60, 1) { Tk.update }.start.wait if @interactive
+    # TkTimer.new(60, 1) { Tk.update }.start.wait if @interactive
     true
   end
 end
