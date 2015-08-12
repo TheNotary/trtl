@@ -1,9 +1,9 @@
+require 'magic_mirror'
+
 #require 'tk'
 require 'trtl/canvas'
 
 class Trtl
-  VERSION = "0.0.1"
-
   CANVAS_WIDTH = 800
   CANVAS_HEIGHT = 600
   HOME_X = CANVAS_WIDTH / 2
@@ -17,10 +17,12 @@ class Trtl
 
   include Canvas
 
+
   def initialize(options = {})
     @is_test = options[:is_test]
     @color = options[:color] || COLORS.sample
     @interactive = options[:interactive]
+    @magic_mirror = MagicMirror.new
     @canvas = options[:canvas] || self.class.canvas(@is_test)
     @width = options[:width] || 1
     @drawing = true
@@ -42,6 +44,10 @@ class Trtl
   #def title(title)
   #  RenderingRoot.new(title: title, is_test: @is_test)
   #end
+
+  def self.root
+    File.expand_path '../..', __FILE__
+  end
 
   def pen_up
     @drawing = false
@@ -93,7 +99,7 @@ class Trtl
 
   def dot(size = nil)
     size ||= [@width + 4, @width * 2].max
-    TkcOval.new(canvas, @x - size / 2, @y - size / 2, @x + size / 2, @y + size / 2, fill: @color, outline: @color)
+    TkcOval.new(canvas, @x - size / 2, @y - size / 2, @x + size / 2, @y + size / 2, fill: @color, outline: @color, is_test: @is_test)
   end
 
   # TODO / TOFIX: This is horribly wrong with the fewer steps due to circumference varying ;-)

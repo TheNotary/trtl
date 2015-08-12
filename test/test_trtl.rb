@@ -9,6 +9,9 @@ describe Trtl do
   end
 
   it "will bind" do
+    MagicMirror.sinatra_root = File.expand_path('../..', __FILE__)
+    m = MagicMirror.new
+
     binding.pry
     @trtl = Trtl.new(is_test: true)
 

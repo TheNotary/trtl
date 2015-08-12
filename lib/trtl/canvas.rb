@@ -9,7 +9,6 @@ module Canvas
   end
 
   class RenderingRoot
-
     # :title => 'trtl', :minsize => [CANVAS_WIDTH, CANVAS_HEIGHT]
     def initialize(options)
       TkRoot.new(options) unless options[:is_test]
@@ -36,6 +35,12 @@ module Canvas
     # options:  @x, @y, @x + dx * 5 , @y + dy * 5, :arrow => 'last', :width => 10, :fill => @color
     def initialize(canvas, x1, y1, x2, y2, options)
       TkcLine.new(canvas, x1, y1, x2, y2, options) unless options[:is_test]
+    end
+  end
+
+  class RenderingcOval
+    def initialize(canvas, x1, y1, x2, y2, options)
+      TkcOval.new(canvas, x1, y1, x2, y2, options) unless options[:is_test]
     end
   end
 
