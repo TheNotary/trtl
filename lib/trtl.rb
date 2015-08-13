@@ -18,7 +18,7 @@ module Trtl
   end
 
   class Trtl
-
+    @@canvas = nil
 
     attr_accessor :heading, :x, :y
     attr_writer :color, :width
@@ -42,19 +42,19 @@ module Trtl
       draw
     end
 
+
     def self.canvas(is_test = nil)
-      return @canvas if @canvas
+      return @@canvas if @@canvas
 
       root = RenderingRoot.new(title: 'trtl', minsize: [CANVAS_WIDTH, CANVAS_HEIGHT], is_test: is_test)
-      @canvas = RenderingCanvas.new(root, bg: 'black', highlightthickness: 0, width: CANVAS_WIDTH, height: CANVAS_HEIGHT, is_test: is_test)
-      @canvas.pack(fill: 'both', expand: 1)
-      @canvas
+      @@canvas = RenderingCanvas.new(root, bg: 'black', highlightthickness: 0, width: CANVAS_WIDTH, height: CANVAS_HEIGHT, is_test: is_test)
+      @@canvas.pack(fill: 'both', expand: 1)
+      @@canvas
     end
 
-    # TODO:  Assertain if below function is dead code or has a purpose.
-    # hmmm... dead code?  Oh.. possibly a way to reset the canvas?... idk...
     def title(title)
-      RenderingRoot.new(title: title, is_test: @is_test)
+      MagicMirror.command_cache << "MagicMirror.setTitle('#{options[:title]}');"
+      # RenderingRoot.new(title: title, is_test: @is_test)
     end
 
     def self.root

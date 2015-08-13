@@ -8,7 +8,8 @@ module Canvas
 
   end
 
-  # This *would* represent the DOM, but instead it will do nothing
+  # This *would* represent the DOM, but instead it will represent a cleared
+  # MagicMirror.command_cache and a setTitle command for the window
   # returns the ID of that canvas
   class RenderingRoot
     # :title => 'trtl', :minsize => [CANVAS_WIDTH, CANVAS_HEIGHT]
@@ -21,7 +22,6 @@ module Canvas
     def to_s
       "myCanvas"
     end
-
   end
 
   # This represents our HTML5 canvas element
