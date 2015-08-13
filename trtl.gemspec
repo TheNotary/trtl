@@ -22,4 +22,5 @@ Gem::Specification.new do |s|
   s.add_dependency "magic_mirror"
 
   s.add_development_dependency "pry"
+  s.add_development_dependency "rake"
 end
