@@ -47,6 +47,8 @@ module Trtl
       return @@canvas if @@canvas
 
       root = RenderingRoot.new(title: 'trtl', minsize: [CANVAS_WIDTH, CANVAS_HEIGHT], is_test: is_test)
+      @@trtl_canvas = RenderingCanvas.new("trtlCanvas", bg: 'black', highlightthickness: 0, width: CANVAS_WIDTH, height: CANVAS_HEIGHT, is_test: is_test)
+
       @@canvas = RenderingCanvas.new(root, bg: 'black', highlightthickness: 0, width: CANVAS_WIDTH, height: CANVAS_HEIGHT, is_test: is_test)
       @@canvas.pack(fill: 'both', expand: 1)
       @@canvas
@@ -57,6 +59,7 @@ module Trtl
       # RenderingRoot.new(title: title, is_test: @is_test)
     end
 
+    # finds root of gem, for serving assets through the MagicMirror
     def self.root
       File.expand_path '../..', __FILE__
     end
@@ -179,8 +182,9 @@ module Trtl
 
     def draw
       # note: because we've defined an attr_accessor, we could write @canvas OR canvas
-      @canvas.delete(@turtle_line) if @turtle_line
-      @turtle_line = RenderingcLine.new(@canvas, @x, @y, @x + dx * 5 , @y + dy * 5, arrow: 'last', width: 10, fill: @color, is_test: @is_test)
+
+      @turtle_line = RenderingDrawTrtl.new(@canvas, @x, @y, @x + dx * 5 , @y + dy * 5, arrow: 'last', width: 10, fill: @color, is_test: @is_test)
+
       # Can probably just use ensure_drawn actually..
       # TkTimer.new(60, 1) { Tk.update }.start.wait if @interactive
       true

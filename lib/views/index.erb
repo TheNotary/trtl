@@ -74,8 +74,77 @@ var RenderingcOval = {
     new: function(canvas, x1, y1, x2, y2, options) {
         var canvas = document.getElementById(canvas);
         var context = canvas.getContext('2d');
+
+
     }
 };
+
+var RenderingcPoint = {
+    new: function(canvas, x, y, radius) {
+        var canvas = document.getElementById(canvas);
+        var context = canvas.getContext('2d');
+
+        context.beginPath();
+        context.arc(x, y, radius, 0, 2 * Math.PI, true);
+        context.fill();
+    }
+}
+
+var RenderingDrawTrtl = {
+    new: function(canvas, x1, y1, x2, y2, options) {
+        var canvas = document.getElementById("trtlCanvas");
+        var context = canvas.getContext('2d');
+
+        context.clearRect(0, 0, canvas.width, canvas.height);
+
+
+    }
+}
+
+// RenderingcTriangle.new("trtlCanvas", 20, 40, 20, 20, 8)
+// RenderingcTriangle.new("trtlCanvas", 20, 40, 25, 20, 8)
+var RenderingcTriangle = {
+    // point 1: start of trianble (base)
+    // point 2: Tip of triangle
+    new: function(canvas, x1, y1, x2, y2, width) {
+        var canvas = document.getElementById(canvas);
+        var context = canvas.getContext('2d');
+
+        console.log("P1: (" + x1 + ", " + y1 + ")");
+        console.log("P2: (" + x2 + ", " + y2 + ")");
+
+        RenderingcPoint.new("myCanvas", x1, y1, 2);
+        RenderingcPoint.new("myCanvas", x2, y2, 2);
+
+        var d_y = y2-y1; // distance from y1 and y2
+        var d_x = x2-x1;
+        var m = d_y/d_x; // slope
+
+        var theta = Math.atan2(d_y, d_x) * 180 / Math.PI;
+        theta = theta + 90 % 360
+        //bad: theta = 75 + 90 % 360;
+        console.log("theta: " + theta);
+
+        var x_r = width/2 * Math.cos(theta) + x1;
+        var y_r = width/2 * Math.sin(theta) + y1;
+        console.log("P_r: (" + x_r + ", " + y_r + ")");
+
+        RenderingcPoint.new("myCanvas", x_r, y_r, 1);
+
+
+        //var path=new Path2D();
+        // path.moveTo(75,50);
+        // path.lineTo(100,75);
+        // path.lineTo(100,25);
+        // path.moveTo(x2, y2);
+        // path.lineTo()
+        //
+        // context.fill(path);
+
+    }
+}
+
+
 
 var command_cache = <%= @command_cache %>;
 
@@ -88,4 +157,6 @@ for (var i = 0; i < command_cache.length; i++) {
 // RenderingCanvas.new('myCanvas', { title: 'trtl', minsize: [800, 600] });
 // RenderingcLine.new('myCanvas', 0, 0, 50, 50);
 
+//RenderingcTriangle.new("trtlCanvas", 20, 40, 25, 20, 8);
+RenderingcTriangle.new("trtlCanvas", 20, 40, 20, 20, 20)
 </script>
