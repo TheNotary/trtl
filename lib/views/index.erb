@@ -1,12 +1,63 @@
+<script src="http://127.0.0.1:4555/faye/client.js"></script>
+
+<!-- STUFF RELATED TO COMMUNICATION WITH MAGIC MIRROR: MOVES VERY SOON -->
+<!-- <script src="/web_socket_sauce.js"></script> -->
+<script>
+var betaMessage = "";
+fayeUtility = { client: ""};
+
+fayeUtility.createNewChatClient = function(serverAddress, chatPort){
+    var client = new Faye.Client('http://' + serverAddress + ':' + chatPort + '/faye', {
+        timeout: 120
+    });
+    client.bind('transport:down', function() {
+        alert('Warning:  The connection has been lost.' + betaMessage);
+        //fayeUtility.setStatusToFailed();
+    });
+    client.bind('transport:up', function() {
+        printToConsole("Connected to Faye");
+        //fayeUtility.setStatusToConnected();
+    });
+    return client;
+};
+
+var client = fayeUtility.createNewChatClient("localhost", "4555");
+var channel = "/0001";
+
+function printToConsole(msg){
+    // var el = document.getElementById('console');
+    // el.innerHTML = el.innerHTML + "<div>" + msg + "</div>";
+    console.log("Got command from ruby: " + msg);
+}
+
+var subscription = client.subscribe(channel, function(message) {
+    printToConsole(JSON.stringify(message));
+
+    // Run the code!
+    eval(message)
+});
+
+function publish_message_to_faye(msg){
+    client.publish(channel, {text: msg});
+}
+
+
+
+</script>
+
+
+
+
 
 <body style="background:black;">
 </body>
 
 
 
-<!-- <script src="/web_socket_sauce.js"></script> -->
 
 <script>
+
+
 
 
 var MagicMirror = {
@@ -14,8 +65,6 @@ var MagicMirror = {
         document.title = title;
     }
 };
-
-
 
 // RenderingCanvas.new("myCanvas", { title: 'trtl', minsize: [800, 600] })
 var RenderingCanvas = {
@@ -93,7 +142,6 @@ var RenderingcPoint = {
 
 var RenderingDrawTrtl = {
     new: function(canvasID, x1, y1, x2, y2, options) {
-        console.log(canvasID);
         var canvas = document.getElementById(canvasID);
         var context = canvas.getContext('2d');
 

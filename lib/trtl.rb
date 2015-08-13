@@ -19,6 +19,7 @@ module Trtl
 
   class Trtl
     @@canvas = nil
+    @@magic_mirror = MagicMirror.new
 
     attr_accessor :heading, :x, :y
     attr_writer :color, :width
@@ -33,7 +34,6 @@ module Trtl
       @interactive = options[:interactive]
 
       MagicMirror.sinatra_root = File.expand_path('../..', __FILE__)
-      @magic_mirror = MagicMirror.new
 
       @canvas = options[:canvas] || self.class.canvas(@is_test)
       @width = options[:width] || 1
