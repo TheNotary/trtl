@@ -22,6 +22,7 @@ module Canvas
     def to_s
       "myCanvas"
     end
+
   end
 
   # This represents our HTML5 canvas element
@@ -29,17 +30,18 @@ module Canvas
   class RenderingCanvas
     # root, bg: 'black', highlightthickness: 0, width: CANVAS_WIDTH, height: CANVAS_HEIGHT, is_test: is_test
     def initialize(root, options)
+      @root = root
+
       class_name = self.class.name.sub("Canvas::", "")
       args = method(__method__).parameters.map do |arg|
         v = eval("#{arg[1]}");
-        "'#{v}'"
+        v.to_json.gsub("\"", "'")
       end[0...-1].join(",")
       options_hash = options.to_json.gsub("\"", "'")
       cmd = "#{class_name}.new(#{args}, #{options_hash});"
       MagicMirror.command_cache << cmd
 
       @_canvas = TkCanvas.new(root, options) unless options[:is_test]
-      return "myCanvas"
     end
 
     def pack(options)
@@ -51,7 +53,11 @@ module Canvas
     end
 
     def to_s
-      "myCanvas"
+      @root
+    end
+
+    def to_json
+      @root.to_json
     end
 
   end
@@ -70,7 +76,7 @@ module Canvas
       class_name = self.class.name.sub("Canvas::", "")
       args = method(__method__).parameters.map do |arg|
         v = eval("#{arg[1]}");
-        "'#{v}'"
+        v.to_json.gsub("\"", "'")
       end[0...-1].join(",")
       options_hash = options.to_json.gsub("\"", "'")
       cmd = "#{class_name}.new(#{args}, #{options_hash});"
@@ -85,7 +91,7 @@ module Canvas
       class_name = self.class.name.sub("Canvas::", "")
       args = method(__method__).parameters.map do |arg|
         v = eval("#{arg[1]}");
-        "'#{v}'"
+        v.to_json.gsub("\"", "'")
       end[0...-1].join(",")
       options_hash = options.to_json.gsub("\"", "'")
       cmd = "#{class_name}.new(#{args}, #{options_hash});"
@@ -100,7 +106,7 @@ module Canvas
       class_name = self.class.name.sub("Canvas::", "")
       args = method(__method__).parameters.map do |arg|
         v = eval("#{arg[1]}");
-        "'#{v}'"
+        v.to_json.gsub("\"", "'")
       end[0...-1].join(",")
       options_hash = options.to_json.gsub("\"", "'")
       cmd = "#{class_name}.new(#{args}, #{options_hash});"

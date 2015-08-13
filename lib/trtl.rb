@@ -47,7 +47,7 @@ module Trtl
       return @@canvas if @@canvas
 
       root = RenderingRoot.new(title: 'trtl', minsize: [CANVAS_WIDTH, CANVAS_HEIGHT], is_test: is_test)
-      @@trtl_canvas = RenderingCanvas.new("trtlCanvas", bg: 'black', highlightthickness: 0, width: CANVAS_WIDTH, height: CANVAS_HEIGHT, is_test: is_test)
+      @@trtl_canvas = RenderingCanvas.new("trtlCanvas", bg: 'transparent', highlightthickness: 0, width: CANVAS_WIDTH, height: CANVAS_HEIGHT, is_test: is_test)
 
       @@canvas = RenderingCanvas.new(root, bg: 'black', highlightthickness: 0, width: CANVAS_WIDTH, height: CANVAS_HEIGHT, is_test: is_test)
       @@canvas.pack(fill: 'both', expand: 1)
@@ -183,7 +183,7 @@ module Trtl
     def draw
       # note: because we've defined an attr_accessor, we could write @canvas OR canvas
 
-      @turtle_line = RenderingDrawTrtl.new(@canvas, @x, @y, @x + dx * 5 , @y + dy * 5, arrow: 'last', width: 10, fill: @color, is_test: @is_test)
+      @turtle_line = RenderingDrawTrtl.new(@@trtl_canvas, @x, @y, @x + dx * 5 , @y + dy * 5, arrow: 'last', width: 10, fill: @color, is_test: @is_test)
 
       # Can probably just use ensure_drawn actually..
       # TkTimer.new(60, 1) { Tk.update }.start.wait if @interactive
