@@ -11,9 +11,11 @@ describe Trtl do
   it "will bind" do
     MagicMirror.sinatra_root = File.expand_path('../..', __FILE__)
     m = MagicMirror.new
+    m.init_servers
 
+    # ok, now test you can mutate the command cache...
     binding.pry
-    @trtl = Trtl.new(is_test: true)
+    # @trtl = Trtl.new(is_test: true)
 
   end
 

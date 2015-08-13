@@ -1,2 +1,73 @@
-hi
+
+<body>
+</body>
+
+
+
 <script src="/web_socket_sauce.js"></script>
+
+<script>
+
+// RenderingCanvas.new("myCanvas", { title: 'trtl', minsize: [800, 600] })
+var RenderingCanvas = {
+    new: function(root, options) {
+        var canvas = document.createElement('canvas');
+
+        canvas.id = "myCanvas";
+        canvas.width = options.width;
+        canvas.height = options.height;
+        canvas.style.zIndex = 8;
+        //canvas.style.position = "absolute";
+        canvas.style.border = "1px solid";
+
+        // options.highlightthickness: 0
+        // options.bg: 'black'
+
+        // delete canvas element if it exists
+        //  > Get old canvas
+        var oldCanvas = document.getElementById("myCanvas");
+        if (oldCanvas != undefined) {
+            // get parent (body)
+            var parent = document.body;
+            // delete old canvas from parent
+            parent.removeChild(oldCanvas);
+        }
+
+        document.body.appendChild(canvas);
+        return canvas.id;
+    }
+};
+
+//,"RenderingcLine.new('myCanvas', {'arrow':'last','width':10,'fill':'red','is_test':true});"
+// RenderingcLine.new("myCanvas", 0, 0, 50, 50)
+var RenderingcLine = {
+    new: function(canvas, x1, y1, x2, y2, options) {
+        var canvas = document.getElementById(canvas);
+        var context = canvas.getContext('2d');
+
+        context.beginPath();
+        context.moveTo(x1, y1);
+        context.lineTo(x2, y2);
+        context.stroke();
+    }
+};
+
+var RenderingcOval = {
+    new: function(canvas, x1, y1, x2, y2, options) {
+        var canvas = document.getElementById(canvas);
+        var context = canvas.getContext('2d');
+    }
+};
+
+var command_cache = <%= @command_cache %>;
+
+for (var i = 0; i < command_cache.length; i++) {
+    // run each command in the command_cache...
+    var cmd = command_cache[i];
+    eval(cmd);
+}
+
+// RenderingCanvas.new('myCanvas', { title: 'trtl', minsize: [800, 600] });
+// RenderingcLine.new('myCanvas', 0, 0, 50, 50);
+
+</script>
