@@ -107,29 +107,19 @@ var RenderingcTriangle = {
     // point 1: start of trianble (base)
     // point 2: Tip of triangle
     new: function(canvas, x1, y1, x2, y2, width) {
+
+        var a = new ArrowShape(x1, y1, x2, y2, width);
+
         var canvas = document.getElementById(canvas);
         var context = canvas.getContext('2d');
 
-        console.log("P1: (" + x1 + ", " + y1 + ")");
-        console.log("P2: (" + x2 + ", " + y2 + ")");
+        var corners = a.getCorners();
 
-        RenderingcPoint.new("myCanvas", x1, y1, 2);
-        RenderingcPoint.new("myCanvas", x2, y2, 2);
+        console.log("P2: " + corners[0]);
+        console.log("P_r: " + corners[1]);
+        console.log("P_l: " + corners[2]);
 
-        var d_y = y2-y1; // distance from y1 and y2
-        var d_x = x2-x1;
-        var m = d_y/d_x; // slope
 
-        var theta = Math.atan2(d_y, d_x) * 180 / Math.PI;
-        theta = theta + 90 % 360
-        //bad: theta = 75 + 90 % 360;
-        console.log("theta: " + theta);
-
-        var x_r = width/2 * Math.cos(theta) + x1;
-        var y_r = width/2 * Math.sin(theta) + y1;
-        console.log("P_r: (" + x_r + ", " + y_r + ")");
-
-        RenderingcPoint.new("myCanvas", x_r, y_r, 1);
 
 
         //var path=new Path2D();
@@ -140,8 +130,58 @@ var RenderingcTriangle = {
         // path.lineTo()
         //
         // context.fill(path);
+    },
+    getArrowCorner: function(x1, y1, x2, y2) {
 
     }
+}
+
+
+var ArrowShape = function(x1, y1, x2, y2, width) {
+    var x1 = x1;
+    var y1 = y1;
+    var x2 = x2;
+    var y2 = y2;
+    var width = width;
+
+    this.getCornerFromLine = function(side) {
+        if (side === "right")
+            var sideSign = 1;
+        else
+            var sideSign = -1;
+
+        console.log("P1: (" + x1 + ", " + y1 + ")");
+        console.log("P2: (" + x2 + ", " + y2 + ")");
+
+        RenderingcPoint.new("myCanvas", x1, y1, 2);
+        RenderingcPoint.new("myCanvas", x2, y2, 2);
+
+        var d_y = y2 - y1; // distance from y1 and y2
+        var d_x = x1 - x2;
+        var m = d_y/d_x; // slope
+
+        var theta = Math.atan2(d_y, d_x); // * 180 / Math.PI;
+        theta = theta + sideSign * Math.PI/2 % (2*Math.PI);
+        console.log("theta (radians): " + theta);
+
+        console.log("cos(theta): " + Math.cos(theta));
+
+        var x_r = width/2 * Math.cos(theta) + x1;
+        var y_r = y1 - width/2 * Math.sin(theta);
+        console.log("P_r: (" + x_r + ", " + y_r + ")");
+
+        RenderingcPoint.new("myCanvas", x_r, y_r, 1);
+
+        return [x_r, y_r];
+    };
+
+    this.getCorners = function() {
+        var c1 = [x2, y2];
+        var c2 = this.getCornerFromLine("right");
+        var c3 = this.getCornerFromLine("left");
+        return [c1, c2, c3];
+    };
+
 }
 
 
@@ -157,6 +197,17 @@ for (var i = 0; i < command_cache.length; i++) {
 // RenderingCanvas.new('myCanvas', { title: 'trtl', minsize: [800, 600] });
 // RenderingcLine.new('myCanvas', 0, 0, 50, 50);
 
-//RenderingcTriangle.new("trtlCanvas", 20, 40, 25, 20, 8);
-RenderingcTriangle.new("trtlCanvas", 20, 40, 20, 20, 20)
+// RenderingcTriangle.new("trtlCanvas", 20, 40, 20, 20, 20);
+//RenderingcTriangle.new("trtlCanvas", 20, 40, 15, 20, 20);
+// RenderingcTriangle.new("trtlCanvas", 20, 40, 24, 20, 20);
+
+// RenderingcTriangle.new("trtlCanvas", 20, 40, 25, 20, 20);
+// var a = new ArrowShape( 20, 40, 20, 20, 20);
+var a = new ArrowShape(20, 40, 24, 20, 20);
+// var a = new ArrowShape(20, 40, 19, 20, 20);
+
+
+a.getCornerFromLine("left");
+a.getCornerFromLine("right");
+
 </script>
