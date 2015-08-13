@@ -53,9 +53,9 @@ module Trtl
 
     # TODO:  Assertain if below function is dead code or has a purpose.
     # hmmm... dead code?  Oh.. possibly a way to reset the canvas?... idk...
-    #def title(title)
-    #  RenderingRoot.new(title: title, is_test: @is_test)
-    #end
+    def title(title)
+      RenderingRoot.new(title: title, is_test: @is_test)
+    end
 
     def self.root
       File.expand_path '../..', __FILE__

@@ -13,6 +13,8 @@ module Canvas
   class RenderingRoot
     # :title => 'trtl', :minsize => [CANVAS_WIDTH, CANVAS_HEIGHT]
     def initialize(options)
+      MagicMirror.command_cache = []
+      MagicMirror.command_cache << "MagicMirror.setTitle('#{options[:title]}');"
       TkRoot.new(options) unless options[:is_test]
     end
 
@@ -55,8 +57,16 @@ module Canvas
   end
 
   class RenderingcLine
+    attr_accessor :x1, :y1, :x2, :y2, :width
+
     # options:  @x, @y, @x + dx * 5 , @y + dy * 5, :arrow => 'last', :width => 10, :fill => @color
     def initialize(canvas, x1, y1, x2, y2, options)
+      @x1 = x1
+      @y1 = y1
+      @x2 = x2
+      @y2 = y2
+      @width = options[:width]
+
       class_name = self.class.name.sub("Canvas::", "")
       args = method(__method__).parameters.map do |arg|
         v = eval("#{arg[1]}");
@@ -82,6 +92,12 @@ module Canvas
       MagicMirror.command_cache << cmd
 
       TkcOval.new(canvas, x1, y1, x2, y2, options) unless options[:is_test]
+    end
+  end
+
+  class RenderingDrawTrtl
+    def initialize(canvas, x1, y1, x2, y2, options)
+
     end
   end
 

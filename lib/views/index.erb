@@ -8,16 +8,27 @@
 
 <script>
 
+
+var MagicMirror = {
+    setTitle: function(title) {
+        document.title = title;
+    }
+};
+
+
+
 // RenderingCanvas.new("myCanvas", { title: 'trtl', minsize: [800, 600] })
 var RenderingCanvas = {
-    new: function(root, options) {
+    new: function(canvasID, options) {
         var canvas = document.createElement('canvas');
 
-        canvas.id = "myCanvas";
+        canvas.id = canvasID;
         canvas.width = options.width;
         canvas.height = options.height;
         canvas.style.zIndex = 8;
-        //canvas.style.position = "absolute";
+        canvas.style.position = "absolute";
+        canvas.style.left = 8;
+        canvas.style.top = 8;
         canvas.style.border = "1px solid";
 
         // options.highlightthickness: 0
@@ -44,6 +55,13 @@ var RenderingcLine = {
     new: function(canvas, x1, y1, x2, y2, options) {
         var canvas = document.getElementById(canvas);
         var context = canvas.getContext('2d');
+
+        // width
+        if (options.width)
+            context.lineWidth = options.width;
+        // color = options.fill
+        if (options.fill)
+            context.strokeStyle = options.fill;
 
         context.beginPath();
         context.moveTo(x1, y1);
