@@ -94,7 +94,7 @@ module Trtl
     end
 
     def move(new_x, new_y)
-      RenderingcLine.new(canvas, @x, @y, new_x, new_y, width: @width, fill: @color, is_test: @is_test) if @drawing
+      RenderingcLine.new(@canvas, @x, @y, new_x, new_y, width: @width, fill: @color, is_test: @is_test) if @drawing
       @x, @y = new_x, new_y
       draw
     end
@@ -111,7 +111,7 @@ module Trtl
 
     def dot(size = nil)
       size ||= [@width + 4, @width * 2].max
-      TkcOval.new(canvas, @x - size / 2, @y - size / 2, @x + size / 2, @y + size / 2, fill: @color, outline: @color, is_test: @is_test)
+      TkcOval.new(@canvas, @x - size / 2, @y - size / 2, @x + size / 2, @y + size / 2, fill: @color, outline: @color, is_test: @is_test)
     end
 
     # TODO / TOFIX: This is horribly wrong with the fewer steps due to circumference varying ;-)
@@ -178,8 +178,9 @@ module Trtl
     end
 
     def draw
-      canvas.delete(@turtle_line) if @turtle_line
-      @turtle_line = RenderingcLine.new(canvas, @x, @y, @x + dx * 5 , @y + dy * 5, arrow: 'last', width: 10, fill: @color, is_test: @is_test)
+      # note: because we've defined an attr_accessor, we could write @canvas OR canvas
+      @canvas.delete(@turtle_line) if @turtle_line
+      @turtle_line = RenderingcLine.new(@canvas, @x, @y, @x + dx * 5 , @y + dy * 5, arrow: 'last', width: 10, fill: @color, is_test: @is_test)
       # Can probably just use ensure_drawn actually..
       # TkTimer.new(60, 1) { Tk.update }.start.wait if @interactive
       true
