@@ -16,7 +16,7 @@ module Trtl
     def initialize(options)
       MagicMirror.command_cache.clear
       MagicMirror.command_cache << "MagicMirror.setTitle('#{options[:title]}');"
-      TkRoot.new(options) unless options[:is_test]
+      # TkRoot.new(options) unless options[:is_test]
     end
 
     def to_s
@@ -41,7 +41,7 @@ module Trtl
       cmd = "#{class_name}.new(#{args}, #{options_hash});"
       MagicMirror.command_cache << cmd
 
-      @_canvas = TkCanvas.new(root, options) unless options[:is_test]
+      # @_canvas = TkCanvas.new(root, options) unless options[:is_test]
     end
 
     def pack(options)
@@ -82,7 +82,7 @@ module Trtl
       cmd = "#{class_name}.new(#{args}, #{options_hash});"
       MagicMirror.command_cache << cmd
 
-      TkcLine.new(canvas, x1, y1, x2, y2, options) unless options[:is_test]
+      # TkcLine.new(canvas, x1, y1, x2, y2, options) unless options[:is_test]
     end
   end
 
@@ -97,7 +97,7 @@ module Trtl
       cmd = "#{class_name}.new(#{args}, #{options_hash});"
       MagicMirror.command_cache << cmd
 
-      TkcOval.new(canvas, x1, y1, x2, y2, options) unless options[:is_test]
+      # TkcOval.new(canvas, x1, y1, x2, y2, options) unless options[:is_test]
     end
   end
 
