@@ -1,4 +1,4 @@
-module Canvas
+module Trtl
 
   def init
 
@@ -32,7 +32,7 @@ module Canvas
     def initialize(root, options)
       @root = root
 
-      class_name = self.class.name.sub("Canvas::", "")
+      class_name = self.class.name.sub(/(^.*::)/, "")
       args = method(__method__).parameters.map do |arg|
         v = eval("#{arg[1]}");
         v.to_json.gsub("\"", "'")
@@ -73,7 +73,7 @@ module Canvas
       @y2 = y2
       @width = options[:width]
 
-      class_name = self.class.name.sub("Canvas::", "")
+      class_name = self.class.name.sub(/(^.*::)/, "")
       args = method(__method__).parameters.map do |arg|
         v = eval("#{arg[1]}");
         v.to_json.gsub("\"", "'")
@@ -88,7 +88,7 @@ module Canvas
 
   class RenderingcOval
     def initialize(canvas, x1, y1, x2, y2, options)
-      class_name = self.class.name.sub("Canvas::", "")
+      class_name = self.class.name.sub(/(^.*::)/, "")
       args = method(__method__).parameters.map do |arg|
         v = eval("#{arg[1]}");
         v.to_json.gsub("\"", "'")
@@ -103,7 +103,7 @@ module Canvas
 
   class RenderingDrawTrtl
     def initialize(canvas, x1, y1, x2, y2, options)
-      class_name = self.class.name.sub("Canvas::", "")
+      class_name = self.class.name.sub(/(^.*::)/, "")
       args = method(__method__).parameters.map do |arg|
         v = eval("#{arg[1]}");
         v.to_json.gsub("\"", "'")

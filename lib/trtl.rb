@@ -25,9 +25,6 @@ module Trtl
     attr_writer :color, :width
     attr_reader :canvas
 
-    include Canvas
-
-
     def initialize(options = {})
       @is_test = options[:is_test]
       @color = options[:color] || COLORS.sample
