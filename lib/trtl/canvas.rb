@@ -87,6 +87,8 @@ module Trtl
   end
 
   class RenderingcOval
+    # point1: upper left corner
+    # point2: lower right corner
     def initialize(canvas, x1, y1, x2, y2, options)
       class_name = self.class.name.sub(/(^.*::)/, "")
       args = method(__method__).parameters.map do |arg|
@@ -97,7 +99,7 @@ module Trtl
       cmd = "#{class_name}.new(#{args}, #{options_hash});"
       MagicMirror.command_cache << cmd
 
-      # TkcOval.new(canvas, x1, y1, x2, y2, options) unless options[:is_test]
+      # TkcOval.new(canvas, x1, y1, x2, y2, options)
     end
   end
 

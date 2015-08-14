@@ -116,7 +116,8 @@ module Trtl
 
     def dot(size = nil)
       size ||= [@width + 4, @width * 2].max
-      TkcOval.new(@canvas, @x - size / 2, @y - size / 2, @x + size / 2, @y + size / 2, fill: @color, outline: @color, is_test: @is_test)
+      RenderingcOval.new(@canvas, @x - size / 2, @y - size / 2, @x + size / 2, @y + size / 2, fill: @color, outline: @color, is_test: @is_test)
+      # TkcOval.new(@canvas, @x - size / 2, @y - size / 2, @x + size / 2, @y + size / 2, fill: @color, outline: @color, is_test: @is_test)
     end
 
     # TODO / TOFIX: This is horribly wrong with the fewer steps due to circumference varying ;-)
