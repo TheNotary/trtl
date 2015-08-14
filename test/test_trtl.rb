@@ -14,7 +14,7 @@ describe Trtl do
     # m.init_servers
 
     # ok, now test you can mutate the command cache...
-    binding.pry
+    # binding.pry
     # @trtl = Trtl.new(is_test: true)
 
   end
