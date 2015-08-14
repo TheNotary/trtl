@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   #s.add_dependency "magic_mirror"
-  s.add_dependency "magic_mirror"
+  s.add_dependency "magic_mirror", "~> 0.1.1"
 
   s.add_development_dependency "pry"
   s.add_development_dependency "rake"
