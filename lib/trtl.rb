@@ -31,8 +31,11 @@ module Trtl
       @interactive = options[:interactive]
 
       MagicMirror.sinatra_root = File.expand_path('../..', __FILE__)
-      @@magic_mirror = MagicMirror.new
-      @@magic_mirror.init_servers
+
+      if @@magic_mirror.nil?
+        @@magic_mirror = MagicMirror.new
+        @@magic_mirror.init_servers!
+      end
 
       @canvas = options[:canvas] || self.class.canvas(@is_test)
       @width = options[:width] || 1
