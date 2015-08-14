@@ -1,6 +1,6 @@
-require_relative '../lib/trtl'
+require 'trtl'
 
-include InteractiveTurtle
+include Trtl::InteractiveTurtle
 
 # Example below taken from Ruby quiz turtle_graphics archive
 # http://www.rubyquiz.com/quiz104.html

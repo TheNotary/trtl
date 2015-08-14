@@ -1,4 +1,5 @@
-require_relative '../lib/trtl'
+#require_relative '../lib/trtl'
+require 'trtl'
 
 # Example of using Trtl in a more traditional fashion
 

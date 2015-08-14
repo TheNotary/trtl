@@ -1,4 +1,4 @@
-require_relative '../lib/trtl'
+require 'trtl'
 
 # Example below adapted from Ruby quiz turtle_graphics archive
 # http://www.rubyquiz.com/quiz104.html
@@ -23,7 +23,7 @@ Trtl.new(:width => 2, :color => 'brown').run do
       back _size
       ensure_drawn
    end
-   
+
    left 90
    back 180
    pen_down

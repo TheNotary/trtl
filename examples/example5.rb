@@ -1,8 +1,8 @@
-require_relative '../lib/trtl'
+require 'trtl'
 
 t = Trtl.new :color => 'blue', :width => 5
 
-10.times do 
+10.times do
   t.circle rand(100), 180, rand(10) + 15
   t.dot 20
   t.forward rand(100)
