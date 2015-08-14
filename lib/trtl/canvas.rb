@@ -14,7 +14,7 @@ module Trtl
   class RenderingRoot
     # :title => 'trtl', :minsize => [CANVAS_WIDTH, CANVAS_HEIGHT]
     def initialize(options)
-      MagicMirror.command_cache.clear
+      MagicMirror.command_cache.reset
       MagicMirror.command_cache << "MagicMirror.setTitle('#{options[:title]}');"
       # TkRoot.new(options) unless options[:is_test]
     end

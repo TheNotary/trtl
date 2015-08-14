@@ -63,6 +63,9 @@ function publish_message_to_faye(msg){
 var MagicMirror = {
     setTitle: function(title) {
         document.title = title;
+    },
+    clearCommandCache: function() {
+        window.command_cache = [];
     }
 };
 
@@ -218,7 +221,7 @@ var ArrowShape = function(x1, y1, x2, y2, width) {
 
 
 
-var command_cache = <%= @command_cache %>;
+window.command_cache = <%= @command_cache %>;
 
 for (var i = 0; i < command_cache.length; i++) {
     // run each command in the command_cache...

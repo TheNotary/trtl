@@ -27,14 +27,15 @@ module Trtl
 
     def initialize(options = {})
       @is_test = options[:is_test]
-      @color = options[:color] || COLORS.sample
-      @interactive = options[:interactive]
 
       if @@magic_mirror.nil?
         @@magic_mirror = MagicMirror.new( sinatra_root: File.expand_path('../..', __FILE__),
                                           init_servers: true)
       end
 
+
+      @color = options[:color] || COLORS.sample
+      @interactive = options[:interactive]
       @canvas = options[:canvas] || self.class.canvas(@is_test)
       @width = options[:width] || 1
       @drawing = true
@@ -45,6 +46,7 @@ module Trtl
 
     def self.canvas(is_test = nil)
       return @@canvas if @@canvas
+      @@magic_mirror.command_cache.reset # hmm... a new trtl means we clear the canvas
 
       root = RenderingRoot.new(title: 'trtl', minsize: [CANVAS_WIDTH, CANVAS_HEIGHT], is_test: is_test)
       @@trtl_canvas = RenderingCanvas.new("trtlCanvas", bg: 'transparent', highlightthickness: 0, width: CANVAS_WIDTH, height: CANVAS_HEIGHT, is_test: is_test)
@@ -143,6 +145,7 @@ module Trtl
 
     def ensure_drawn
       sleep 30
+      true
     end
 
     def wait
@@ -191,10 +194,13 @@ module Trtl
     end
   end
 
+  #
+  # You can't do include Trtl::InteractiveTurtle in a ruby script...
+  # This aspect of ruby is a bit out of my legue =(
   module InteractiveTurtle
     DEG = Math::PI / 180.0
 
-    Trtl.instance_methods(false).each do |meth|
+    ::Trtl::Trtl.instance_methods(false).each do |meth|
       define_method meth do |*args, &p|
         (@turtle ||= ::Trtl.new(interactive: true)).send(meth, *args, &p)
       end
