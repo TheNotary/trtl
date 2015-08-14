@@ -196,16 +196,17 @@ module Trtl
       true
     end
   end
-end
 
-module InteractiveTurtle
-  DEG = Math::PI / 180.0
+  module InteractiveTurtle
+    DEG = Math::PI / 180.0
 
-  Trtl.instance_methods(false).each do |meth|
-    define_method meth do |*args, &p|
-      (@turtle ||= ::Trtl.new(interactive: true)).send(meth, *args, &p)
+    Trtl.instance_methods(false).each do |meth|
+      define_method meth do |*args, &p|
+        (@turtle ||= ::Trtl.new(interactive: true)).send(meth, *args, &p)
+      end
     end
   end
 end
 
-include InteractiveTurtle if %w{irb pry}.include?($0)
+
+include Trtl::InteractiveTurtle if %w{irb pry}.include?($0)
