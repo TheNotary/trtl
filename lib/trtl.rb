@@ -1,4 +1,4 @@
-require 'tilt'
+#require 'tilt'
 require 'magic_mirror'
 
 
