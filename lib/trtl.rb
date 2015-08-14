@@ -19,7 +19,7 @@ module Trtl
 
   class Trtl
     @@canvas = nil
-    @@magic_mirror = nil # MagicMirror.new
+    @@magic_mirror = nil
 
     attr_accessor :heading, :x, :y
     attr_writer :color, :width
@@ -30,11 +30,9 @@ module Trtl
       @color = options[:color] || COLORS.sample
       @interactive = options[:interactive]
 
-      MagicMirror.sinatra_root = File.expand_path('../..', __FILE__)
-
       if @@magic_mirror.nil?
-        @@magic_mirror = MagicMirror.new
-        @@magic_mirror.init_servers!
+        @@magic_mirror = MagicMirror.new( sinatra_root: File.expand_path('../..', __FILE__),
+                                          init_servers: true)
       end
 
       @canvas = options[:canvas] || self.class.canvas(@is_test)
@@ -54,10 +52,6 @@ module Trtl
       @@canvas = RenderingCanvas.new(root, bg: 'black', highlightthickness: 0, width: CANVAS_WIDTH, height: CANVAS_HEIGHT, is_test: is_test)
       @@canvas.pack(fill: 'both', expand: 1)
       @@canvas
-    end
-
-    def magic_mirror
-      @@magic_mirror
     end
 
     def title(title)
