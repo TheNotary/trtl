@@ -1,46 +1,60 @@
 <script src="http://127.0.0.1:4555/faye/client.js"></script>
 
 <!-- STUFF RELATED TO COMMUNICATION WITH MAGIC MIRROR: MOVES VERY SOON -->
-<!-- <script src="/web_socket_sauce.js"></script> -->
+<!-- <script src="/magic_mirror.js"></script> -->
 <script>
-var betaMessage = "";
-fayeUtility = { client: ""};
 
-fayeUtility.createNewChatClient = function(serverAddress, chatPort){
-    var client = new Faye.Client('http://' + serverAddress + ':' + chatPort + '/faye', {
-        timeout: 120
-    });
-    client.bind('transport:down', function() {
-        alert('Warning:  The connection has been lost.' + betaMessage);
-        //fayeUtility.setStatusToFailed();
-    });
-    client.bind('transport:up', function() {
-        printToConsole("Connected to Faye");
-        //fayeUtility.setStatusToConnected();
-    });
-    return client;
+var MagicMirror = {
+    clearCommandCache: function() {
+        window.command_cache = [];
+        // also remove the canvases
+    },
+    setTitle: function(title) {
+        document.title = title;
+    }
 };
 
-var client = fayeUtility.createNewChatClient("localhost", "4555");
-var channel = "/0001";
+var FayeUtility = function(options) {
+    var channel = options.dataChannel;
+    this.client = createNewChatClient(options.domain, options.port);
 
-function printToConsole(msg){
-    // var el = document.getElementById('console');
-    // el.innerHTML = el.innerHTML + "<div>" + msg + "</div>";
-    console.log("Got command from ruby: " + msg);
-}
+    function createNewChatClient(serverAddress, chatPort){
+        var client = new Faye.Client('http://' + serverAddress + ':' + chatPort + '/faye', {
+            timeout: 120
+        });
+        client.bind('transport:down', function() {
+            console.log("Faye connection lost");
+        });
+        client.bind('transport:up', function() {
+            console.log("Connected to Faye");
+        });
+        subscribeToDataChannel(client);
+        return client;
+    };
 
-var subscription = client.subscribe(channel, function(message) {
-    printToConsole(JSON.stringify(message));
+    function subscribeToDataChannel(_client){
+        this.subscription = _client.subscribe(channel, function(message) {
+            // fayeUtility.printToConsole(JSON.stringify(message));
 
-    // Run the code!
-    eval(message)
-});
+            // Run the code!
+            eval(message)
+        });
+    };
 
-function publish_message_to_faye(msg){
-    client.publish(channel, {text: msg});
-}
+    this.publish_message_to_faye = function(msg) {
+        client.publish(channel, {text: msg});
+    };
 
+    this.printToConsole = function(msg) {
+        // var el = document.getElementById('console');
+        // el.innerHTML = el.innerHTML + "<div>" + msg + "</div>";
+        console.log("Got command from ruby: " + msg);
+    };
+};
+
+MagicMirror.fayeUtility = new FayeUtility({ domain: "localhost",
+                                    port: "4555",
+                                    dataChannel: "/0001"});
 
 
 </script>
@@ -53,21 +67,7 @@ function publish_message_to_faye(msg){
 </body>
 
 
-
-
 <script>
-
-
-
-
-var MagicMirror = {
-    setTitle: function(title) {
-        document.title = title;
-    },
-    clearCommandCache: function() {
-        window.command_cache = [];
-    }
-};
 
 // RenderingCanvas.new("myCanvas", { title: 'trtl', minsize: [800, 600] })
 var RenderingCanvas = {
@@ -88,19 +88,22 @@ var RenderingCanvas = {
         // options.bg: 'black'
 
         // delete canvas element if it exists
-        //  > Get old canvas
-        var oldCanvas = document.getElementById("myCanvas");
-        if (oldCanvas != undefined) {
-            // get parent (body)
-            var parent = document.body;
-            // delete old canvas from parent
-            parent.removeChild(oldCanvas);
-        }
+        DeleteOldCanvas(canvasID);
 
         document.body.appendChild(canvas);
         return canvas.id;
     }
 };
+
+var DeleteOldCanvas = function(id) {
+    var oldCanvas = document.getElementById(id);
+    if (oldCanvas != undefined) {
+        // get parent (body)
+        var parent = document.body;
+        // delete old canvas from parent
+        parent.removeChild(oldCanvas);
+    }
+}
 
 //,"RenderingcLine.new('myCanvas', {'arrow':'last','width':10,'fill':'red','is_test':true});"
 // RenderingcLine.new("myCanvas", 0, 0, 50, 50)
@@ -109,10 +112,8 @@ var RenderingcLine = {
         var canvas = document.getElementById(canvas);
         var context = canvas.getContext('2d');
 
-        // width
         if (options.width)
             context.lineWidth = options.width;
-        // color = options.fill
         if (options.fill)
             context.strokeStyle = options.fill;
 
@@ -138,7 +139,6 @@ var RenderingcOval = {
 
         context.beginPath();
         context.arc(x, y, radiusX, 0, 2 * Math.PI, true);
-        // context.ellipse(x, y, radiusX, radiusY, 0, 0, 2 * Math.PI);
         context.fill();
     }
 };
@@ -159,11 +159,18 @@ var RenderingDrawTrtl = {
         var canvas = document.getElementById(canvasID);
         var context = canvas.getContext('2d');
 
-        context.clearRect(0, 0, canvas.width, canvas.height);
+        if (window.currentTrtl) {
+            var clearPixels = window.currentTrtl.getClearPixels();
+            context.clearRect(clearPixels[0], clearPixels[1], clearPixels[2], clearPixels[3]);
+        }
 
         RenderingcTriangle.new(canvasID, x1, y1, x2, y2, options);
     }
 }
+
+
+
+
 
 // RenderingcTriangle.new("trtlCanvas", 20, 40, 25, 20, 8)
 var RenderingcTriangle = {
@@ -202,6 +209,11 @@ var ArrowShape = function(x1, y1, x2, y2, width) {
     var y2 = y2;
     var width = width;
 
+    var c1 = undefined;
+    var c2 = undefined;
+    var c3 = undefined;
+
+
     var getCornerFromLine = function(side) {
         if (side === "right")
             var sideSign = 1;
@@ -222,32 +234,55 @@ var ArrowShape = function(x1, y1, x2, y2, width) {
     };
 
     this.getCorners = function() {
-        var c1 = [x2, y2];
-        var c2 = getCornerFromLine("right");
-        var c3 = getCornerFromLine("left");
+        c1 = [x2, y2];
+        c2 = getCornerFromLine("right");
+        c3 = getCornerFromLine("left");
         return [c1, c2, c3];
     };
 
+    // find the highest, lowest, leftist, and rightest pixels of the triangle
+    // and clear said rectangle =)
+    this.getClearPixels = function() {
+        // find top-most, bottom-most, left-most and right-most points
+        var leftMost = c1[0] < c2[0] ? c1[0] : c2[0];
+        leftMost = leftMost < c3[0] ? leftMost : c3[0];
+
+        var rightMost = c1[0] > c2[0] ? c1[0] : c2[0];
+        rightMost = rightMost > c3[0] ? rightMost : c3[0];
+
+        var topMost = c1[1] < c2[1] ? c1[1] : c2[1];
+        topMost = topMost < c3[1] ? topMost : c3[1];
+
+        var bottomMost = c1[1] > c2[1] ? c1[1] : c2[1];
+        bottomMost = bottomMost > c3[1] ? bottomMost : c3[1];
+
+        return [leftMost-5, topMost-5, rightMost+5, bottomMost+5];
+    }
+
 }
+
+
+
+//var myWorker = new Worker("command_cache.js");
+
+//worker = new Worker("command_cache.js");
+
+
+//sendDataToWorker();
+
+//var ab = new ArrayBuffer(1);
+//worker.postMessage(ab, [ab]);
+
 
 
 
 window.command_cache = <%= @command_cache %>;
 
-for (var i = 0; i < command_cache.length; i++) {
+var cLen = command_cache.length;
+for (var i = 0; i < cLen;  i++) {
     // run each command in the command_cache...
-    var cmd = command_cache[i];
-    eval(cmd);
+    // var cmd = command_cache[i];
+    eval(command_cache.shift());
 }
-
-//RenderingcTriangle.new("trtlCanvas", 20, 40, 15, 20, 20);
-// RenderingcTriangle.new("trtlCanvas", 20, 40, 24, 20, 20);
-
-// RenderingcTriangle.new("trtlCanvas", 20, 40, 25, 20, 20);
-//RenderingcTriangle.new("trtlCanvas", 400, 300, 405, 300, 10);
-// RenderingDrawTrtl.new("trtlCanvas", 400, 300, 405, 300, 10);
-// RenderingDrawTrtl.new("trtlCanvas", 400, 300, 405, 300, { 'width': 10, 'fill':'green' });
-
-// RenderingDrawTrtl.new('trtlCanvas',420.0,300.0,425.0,300.0, {'arrow':'last','width':10,'fill':'green','is_test':true});
 
 </script>

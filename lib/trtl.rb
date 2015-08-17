@@ -36,7 +36,7 @@ module Trtl
 
       @color = options[:color] || COLORS.sample
       @interactive = options[:interactive]
-      @canvas = options[:canvas] || self.class.canvas(@is_test)
+      @canvas = options[:canvas] || self.class.canvas
       @width = options[:width] || 1
       @drawing = true
       home
@@ -44,14 +44,13 @@ module Trtl
     end
 
 
-    def self.canvas(is_test = nil)
-      return @@canvas if @@canvas
-      @@magic_mirror.command_cache.reset # hmm... a new trtl means we clear the canvas
+    def self.canvas
+      @@magic_mirror.command_cache.reset
 
-      root = RenderingRoot.new(title: 'trtl', minsize: [CANVAS_WIDTH, CANVAS_HEIGHT], is_test: is_test)
-      @@trtl_canvas = RenderingCanvas.new("trtlCanvas", bg: 'transparent', highlightthickness: 0, width: CANVAS_WIDTH, height: CANVAS_HEIGHT, is_test: is_test)
+      root = RenderingRoot.new(title: 'trtl', minsize: [CANVAS_WIDTH, CANVAS_HEIGHT])
+      @@trtl_canvas = RenderingCanvas.new("trtlCanvas", bg: 'transparent', highlightthickness: 0, width: CANVAS_WIDTH, height: CANVAS_HEIGHT)
 
-      @@canvas = RenderingCanvas.new(root, bg: 'black', highlightthickness: 0, width: CANVAS_WIDTH, height: CANVAS_HEIGHT, is_test: is_test)
+      @@canvas = RenderingCanvas.new(root, bg: 'black', highlightthickness: 0, width: CANVAS_WIDTH, height: CANVAS_HEIGHT)
       @@canvas.pack(fill: 'both', expand: 1)
       @@canvas
     end
@@ -99,7 +98,7 @@ module Trtl
     end
 
     def move(new_x, new_y)
-      RenderingcLine.new(@canvas, @x, @y, new_x, new_y, width: @width, fill: @color, is_test: @is_test) if @drawing
+      RenderingcLine.new(@canvas, @x, @y, new_x, new_y, width: @width, fill: @color) if @drawing
       @x, @y = new_x, new_y
       draw
     end
@@ -116,7 +115,7 @@ module Trtl
 
     def dot(size = nil)
       size ||= [@width + 4, @width * 2].max
-      RenderingcOval.new(@canvas, @x - size / 2, @y - size / 2, @x + size / 2, @y + size / 2, fill: @color, outline: @color, is_test: @is_test)
+      RenderingcOval.new(@canvas, @x - size / 2, @y - size / 2, @x + size / 2, @y + size / 2, fill: @color, outline: @color)
       # TkcOval.new(@canvas, @x - size / 2, @y - size / 2, @x + size / 2, @y + size / 2, fill: @color, outline: @color, is_test: @is_test)
     end
 
@@ -187,7 +186,7 @@ module Trtl
     def draw
       # note: because we've defined an attr_accessor, we could write @canvas OR canvas
 
-      @turtle_line = RenderingDrawTrtl.new(@@trtl_canvas, @x, @y, @x + dx * 5 , @y + dy * 5, arrow: 'last', width: 10, fill: @color, is_test: @is_test)
+      @turtle_line = RenderingDrawTrtl.new(@@trtl_canvas, @x, @y, @x + dx * 5 , @y + dy * 5, arrow: 'last', width: 10, fill: @color)
 
       # Can probably just use ensure_drawn actually..
       # TkTimer.new(60, 1) { Tk.update }.start.wait if @interactive
