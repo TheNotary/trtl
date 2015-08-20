@@ -35,6 +35,7 @@ var FayeUtility = function(options) {
         });
         client.bind('transport:up', function() {
             console.log("Connected to Faye");
+            setTimeout(retrieveGapInCommandCache, 40);
         });
         subscribeToDataChannel(client);
         return client;
@@ -42,9 +43,7 @@ var FayeUtility = function(options) {
 
     function subscribeToDataChannel(_client){
         this.subscription = _client.subscribe(channel, function(message) {
-            // fayeUtility.printToConsole(JSON.stringify(message));
-
-            // Run the code!
+            // Run the code!  They're all javascript commands
             eval(message)
         });
     };
@@ -64,6 +63,24 @@ var FayeUtility = function(options) {
 MagicMirror.fayeUtility = new FayeUtility({ domain: "localhost",
                                             port: "4555",
                                             dataChannel: "/0001"});
+
+
+// Our page will be missing any commands that were sent through the websocket
+// channel after we first requested the page, and before the faye client is
+// completely connected.
+// This function requests those missing commands
+function retrieveGapInCommandCache() {
+    var xmlhttp = new XMLHttpRequest();
+
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
+            z(JSON.parse(xmlhttp.responseText));
+    }
+
+    xmlhttp.open("GET","/missing_cache?command_cache_length=<%= @command_cache_length %>",true);
+    xmlhttp.send();
+}
+
 
 </script>
 
@@ -111,7 +128,7 @@ var DeleteOldCanvas = function(id) {
         // delete old canvas from parent
         parent.removeChild(oldCanvas);
     }
-}
+};
 
 //,"RenderingcLine.new('myCanvas', {'arrow':'last','width':10,'fill':'red','is_test':true});"
 // RenderingcLine.new("myCanvas", 0, 0, 50, 50)
@@ -160,7 +177,7 @@ var RenderingcPoint = {
         context.arc(x, y, radius, 0, 2 * Math.PI, true);
         context.fill();
     }
-}
+};
 
 var RenderingDrawTrtl = {
     new: function(canvasID, x1, y1, x2, y2, options) {
@@ -174,7 +191,7 @@ var RenderingDrawTrtl = {
 
         RenderingcTriangle.new(canvasID, x1, y1, x2, y2, options);
     }
-}
+};
 
 
 
@@ -206,7 +223,7 @@ var RenderingcTriangle = {
         context.fill(path);
         window.currentTrtl = a;
     }
-}
+};
 
 
 var ArrowShape = function(x1, y1, x2, y2, width) {
@@ -265,8 +282,7 @@ var ArrowShape = function(x1, y1, x2, y2, width) {
 
         return [leftMost-5, topMost-5, rightMost+5, bottomMost+5];
     }
-
-}
+};
 
 </script>
 

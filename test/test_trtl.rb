@@ -35,7 +35,7 @@ describe Trtl do
   end
 
   it "draws the tree" do
-    skip "this test is for visually inspecting outputs"
+    #skip "this test is for visually inspecting outputs"
 
     Trtl.new(:width => 2, :color => 'brown').run do
       def tree(_size)
