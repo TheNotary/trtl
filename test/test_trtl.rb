@@ -20,7 +20,8 @@ describe Trtl do
   end
 
   it "does easy example" do
-    pending
+    skip "this test is for visually inspecting outputs"
+
     t = Trtl.new
 
     10.times do
@@ -34,6 +35,8 @@ describe Trtl do
   end
 
   it "draws the tree" do
+    skip "this test is for visually inspecting outputs"
+
     Trtl.new(:width => 2, :color => 'brown').run do
       def tree(_size)
         if _size < 10
