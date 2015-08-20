@@ -14,6 +14,14 @@ var MagicMirror = {
     }
 };
 
+// iterates over the array 'a' executing the command
+function z(a){
+    for (var i = 0, l = a.length; i < l; i++)
+        eval(a.shift());
+}
+
+
+
 var FayeUtility = function(options) {
     var channel = options.dataChannel;
     this.client = createNewChatClient(options.domain, options.port);
@@ -52,10 +60,10 @@ var FayeUtility = function(options) {
     };
 };
 
-MagicMirror.fayeUtility = new FayeUtility({ domain: "localhost",
-                                    port: "4555",
-                                    dataChannel: "/0001"});
 
+MagicMirror.fayeUtility = new FayeUtility({ domain: "localhost",
+                                            port: "4555",
+                                            dataChannel: "/0001"});
 
 </script>
 
@@ -82,7 +90,7 @@ var RenderingCanvas = {
         canvas.style.left = 8;
         canvas.style.top = 8;
         canvas.style.border = "1px solid";
-        //canvas.style.background = options.bg;
+        // canvas.style.background = options.bg;
 
         // options.highlightthickness: 0
         // options.bg: 'black'
@@ -167,7 +175,6 @@ var RenderingDrawTrtl = {
         RenderingcTriangle.new(canvasID, x1, y1, x2, y2, options);
     }
 }
-
 
 
 
@@ -261,28 +268,6 @@ var ArrowShape = function(x1, y1, x2, y2, width) {
 
 }
 
-
-
-//var myWorker = new Worker("command_cache.js");
-
-//worker = new Worker("command_cache.js");
-
-
-//sendDataToWorker();
-
-//var ab = new ArrayBuffer(1);
-//worker.postMessage(ab, [ab]);
-
-
-
-
-window.command_cache = <%= @command_cache %>;
-
-var cLen = command_cache.length;
-for (var i = 0; i < cLen;  i++) {
-    // run each command in the command_cache...
-    // var cmd = command_cache[i];
-    eval(command_cache.shift());
-}
-
 </script>
+
+<%= @command_cache_fast_evaluator %>
