@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
 
-  s.add_dependency "magic_mirror", "~> 0.1.3"
+  s.add_dependency "magic_mirror", "~> 0.1.4"
 
   s.add_development_dependency "pry"
   s.add_development_dependency "rake"

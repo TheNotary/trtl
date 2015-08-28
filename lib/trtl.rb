@@ -1,9 +1,10 @@
-#require 'tilt'
-require 'magic_mirror'
-
-
-#require 'tk'
-require 'trtl/canvas'
+begin
+  require 'tk'
+  require 'trtl/tk_canvas'
+rescue LoadError
+  require 'magic_mirror'
+  require 'trtl/html5_canvas'
+end
 
 module Trtl
   CANVAS_WIDTH = 800
@@ -28,11 +29,14 @@ module Trtl
     def initialize(options = {})
       @is_test = options[:is_test]
 
-      if @@magic_mirror.nil?
-        @@magic_mirror = MagicMirror.new( sinatra_root: File.expand_path('../..', __FILE__),
-                                          init_servers: true)
+      # TODO:  Refactor
+      if defined? MagicMirror
+        if @@magic_mirror.nil?
+          @@magic_mirror = MagicMirror.new( sinatra_root: File.expand_path('../..', __FILE__),
+                                            init_servers: true)
+        end
+        MagicMirror.command_cache.reset
       end
-
 
       @color = options[:color] || COLORS.sample
       @interactive = options[:interactive]
@@ -45,19 +49,16 @@ module Trtl
 
 
     def self.canvas
-      @@magic_mirror.command_cache.reset
+      root = Rendering.root(title: 'trtl', minsize: [CANVAS_WIDTH, CANVAS_HEIGHT])
 
-      root = RenderingRoot.new(title: 'trtl', minsize: [CANVAS_WIDTH, CANVAS_HEIGHT])
-      @@trtl_canvas = RenderingCanvas.new("trtlCanvas", bg: 'transparent', highlightthickness: 0, width: CANVAS_WIDTH, height: CANVAS_HEIGHT)
+      @@trtl_canvas = Rendering.canvas("trtlCanvas", bg: 'transparent',
+        highlightthickness: 0, width: CANVAS_WIDTH, height: CANVAS_HEIGHT) if defined?(MagicMirror)
 
-      @@canvas = RenderingCanvas.new(root, bg: 'black', highlightthickness: 0, width: CANVAS_WIDTH, height: CANVAS_HEIGHT)
-      @@canvas.pack(fill: 'both', expand: 1)
-      @@canvas
+      @@canvas = Rendering.canvas(root, bg: 'black', highlightthickness: 0, width: CANVAS_WIDTH, height: CANVAS_HEIGHT)
     end
 
     def title(title)
-      MagicMirror.command_cache << "MagicMirror.setTitle('#{options[:title]}');"
-      # RenderingRoot.new(title: title, is_test: @is_test)
+      Rendering.change_title(title)
     end
 
     # finds root of gem, for serving assets through the MagicMirror
@@ -98,7 +99,7 @@ module Trtl
     end
 
     def move(new_x, new_y)
-      RenderingcLine.new(@canvas, @x, @y, new_x, new_y, width: @width, fill: @color) if @drawing
+      Rendering.cLine(@canvas, @x, @y, new_x, new_y, width: @width, fill: @color) if @drawing
       @x, @y = new_x, new_y
       draw
     end
@@ -115,8 +116,7 @@ module Trtl
 
     def dot(size = nil)
       size ||= [@width + 4, @width * 2].max
-      RenderingcOval.new(@canvas, @x - size / 2, @y - size / 2, @x + size / 2, @y + size / 2, fill: @color, outline: @color)
-      # TkcOval.new(@canvas, @x - size / 2, @y - size / 2, @x + size / 2, @y + size / 2, fill: @color, outline: @color, is_test: @is_test)
+      Rendering.cOval(@canvas, @x - size / 2, @y - size / 2, @x + size / 2, @y + size / 2, fill: @color, outline: @color)
     end
 
     # TODO / TOFIX: This is horribly wrong with the fewer steps due to circumference varying ;-)
@@ -185,11 +185,11 @@ module Trtl
 
     def draw
       # note: because we've defined an attr_accessor, we could write @canvas OR canvas
+      canvas.delete(@turtle_line) if @turtle_line and !defined?(MagicMirror)
 
-      @turtle_line = RenderingDrawTrtl.new(@@trtl_canvas, @x, @y, @x + dx * 5 , @y + dy * 5, arrow: 'last', width: 10, fill: @color)
-
+      @turtle_line = Rendering.DrawTrtl(@@trtl_canvas, @x, @y, @x + dx * 5 , @y + dy * 5, arrow: 'last', width: 10, fill: @color)
       # Can probably just use ensure_drawn actually..
-      # TkTimer.new(60, 1) { Tk.update }.start.wait if @interactive
+      TkTimer.new(60, 1) { Tk.update }.start.wait if @interactive and !defined?(MagicMirror)
       true
     end
   end

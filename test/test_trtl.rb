@@ -35,7 +35,12 @@ describe Trtl do
   end
 
   it "draws the tree" do
-    #skip "this test is for visually inspecting outputs"
+    # skip "this test is for visually inspecting outputs"
+
+    puts "ctrl + D to begin drawing tree (refresh browser if you don't see a plain turtle)"
+    binding.pry
+
+    beginning = Time.now
 
     Trtl.new(:width => 2, :color => 'brown').run do
       def tree(_size)
@@ -61,7 +66,13 @@ describe Trtl do
       pen_down
       tree 300.0
 
-      wait
+      ending = Time.now
+
+      puts "that took #{ending-beginning} seconds, tree should be complete"
+      # wait
+      binding.pry
+
+      MagicMirror.command_cache.reset
     end
 
   end

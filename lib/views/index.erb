@@ -130,23 +130,21 @@ var DeleteOldCanvas = function(id) {
     }
 };
 
-//,"RenderingcLine.new('myCanvas', {'arrow':'last','width':10,'fill':'red','is_test':true});"
-// RenderingcLine.new("myCanvas", 0, 0, 50, 50)
-var RenderingcLine = {
-    new: function(canvas, x1, y1, x2, y2, options) {
-        var canvas = document.getElementById(canvas);
-        var context = canvas.getContext('2d');
+//,"cLine.new('myCanvas', {'arrow':'last','width':10,'fill':'red','is_test':true});"
+// cLine.new("myCanvas", 0, 0, 50, 50)
+var cLine = function(canvas, x1, y1, x2, y2, options) {
+    var canvas = document.getElementById(canvas);
+    var context = canvas.getContext('2d');
 
-        if (options.width)
-            context.lineWidth = options.width;
-        if (options.fill)
-            context.strokeStyle = options.fill;
+    if (options.width)
+        context.lineWidth = options.width;
+    if (options.fill)
+        context.strokeStyle = options.fill;
 
-        context.beginPath();
-        context.moveTo(x1, y1);
-        context.lineTo(x2, y2);
-        context.stroke();
-    }
+    context.beginPath();
+    context.moveTo(x1, y1);
+    context.lineTo(x2, y2);
+    context.stroke();
 };
 
 var RenderingcOval = {
