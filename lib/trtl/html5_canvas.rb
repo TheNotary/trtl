@@ -37,9 +37,7 @@ module Trtl
   end
 
   class Rendering
-
     class << self
-
       # This *would* represent the DOM, but instead it will represent a cleared
       # MagicMirror.command_cache and a setTitle command for the window
       # returns the ID of that canvas
@@ -47,25 +45,17 @@ module Trtl
         MagicMirror.command_cache.reset
         MagicMirror.command_cache << "MagicMirror.setTitle('#{options[:title]}');"
         "myCanvas"
-
-        # TkRoot.new(options)
       end
 
       def change_title(title)
         MagicMirror.command_cache << "MagicMirror.setTitle('#{title}');"
-
-        # TkRoot.new(title: title)
       end
 
       def canvas(root, options)
         RenderingCanvas.new(root, options)
-
-        # @@canvas = TkCanvas.new(root, options) unless options[:is_test]
-        # @@canvas.pack(fill: 'both', expand: 1)
       end
 
       def cLine(canvas, x1, y1, x2, y2, options)
-        # RenderingcLine.new(canvas, x1, y1, x2, y2, options)
         MagicMirror.command_cache << "cLine('#{canvas}',#{x1},#{y1},#{x2},#{y2},#{options.to_json.tr("\"", "'")});"
       end
 
@@ -76,9 +66,7 @@ module Trtl
       def DrawTrtl(canvas, x1, y1, x2, y2, options)
         RenderingDrawTrtl.new(canvas, x1, y1, x2, y2, options)
       end
-
     end
-
   end
 
 
@@ -96,11 +84,7 @@ module Trtl
       MagicMirror.command_cache << cmd
     end
 
-
-    def pack(options)
-      "???"
-    end
-
+    # stubbed for pairity with TK style canvas
     def delete(line)
       "???"
     end
@@ -146,21 +130,5 @@ module Trtl
       MagicMirror.command_cache << cmd
     end
   end
-
-  # this class has been optimized away from
-  class RenderingcLine
-    include Reflectable
-    attr_accessor :x1, :y1, :x2, :y2, :width
-
-    # REMOVED in favor of optimizations
-    # options:  @x, @y, @x + dx * 5 , @y + dy * 5, :arrow => 'last', :width => 10, :fill => @color
-    def initialize(canvas, x1, y1, x2, y2, options)
-      cmd = "RenderingcLine.new('#{canvas}',#{x1},#{y1},#{x2},#{y2},#{options.to_json.tr("\"", "'")});"
-      MagicMirror.command_cache << cmd
-    end
-  end
-
-
-
 
 end

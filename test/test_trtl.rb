@@ -37,7 +37,7 @@ describe Trtl do
   it "draws the tree" do
     # skip "this test is for visually inspecting outputs"
 
-    puts "ctrl + D to begin drawing tree (refresh browser if you don't see a plain turtle)"
+    puts "\nctrl + D to begin drawing tree (refresh browser if you don't see a plain turtle)"
     binding.pry
 
     beginning = Time.now

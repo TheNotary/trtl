@@ -29,7 +29,6 @@ module Trtl
     def initialize(options = {})
       @is_test = options[:is_test]
 
-      # TODO:  Refactor
       if defined? MagicMirror
         if @@magic_mirror.nil?
           @@magic_mirror = MagicMirror.new( sinatra_root: File.expand_path('../..', __FILE__),

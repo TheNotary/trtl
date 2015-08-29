@@ -1,9 +1,6 @@
 module Trtl
-
   class Rendering
-
     class << self
-
       def root(options)
         TkRoot.new(options)
       end
@@ -28,12 +25,7 @@ module Trtl
 
       def DrawTrtl(canvas, x1, y1, x2, y2, options)
         @turtle_line = TkcLine.new(canvas, @x, @y, @x + dx * 5 , @y + dy * 5, :arrow => 'last', :width => 10, :fill => @color)
-
-    
       end
-
     end
-
   end
-
 end
